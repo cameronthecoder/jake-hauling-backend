@@ -1,0 +1,33 @@
+# docker-compose.yml
+
+version: "3.8"
+
+services:
+  web:
+    build: .
+    ports:
+      - 8008:8000
+    environment:
+      - DATABASE_URL=postgresql://cameron:Camnooten1@db:4578/jake_hauling
+      - INTUIT_CLIENT_ID=ABWdT4oU6V7yzWlyAYK9PZm9s2XiLcNB9mG4pBGe6mioFzX0BV
+      - INTUIT_CLIENT_SECRET=OBlDQNavHmIaQYQoVazB79HBx80Z1G8o4W1EFMTM
+      - SECRET_KEY=Camnooten1
+    command: bash -c "uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+    depends_on:
+      - db
+    volumes: 
+      - ./:/app
+  db:
+    image: postgres:13-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "4578:4578"
+    command: -p 4578
+    environment:
+      - POSTGRES_USER=cameron
+      - POSTGRES_PASSWORD=Camnooten1
+      - POSTGRES_DB=jake_hauling
+
+volumes:
+  postgres_data:
