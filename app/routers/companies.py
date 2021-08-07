@@ -14,7 +14,7 @@ def get_companies(page: int = Query(1, ge=0), searchTerm: str = Query(None), lim
     # Pagination
     if searchTerm is not None:
         companies = db.query(Company).\
-            filter(Company.name.ilike('%{searchTerm}%')).all()
+            filter(Company.name.ilike('%{}%'.format(searchTerm))).all()
     else:
         if page == 0:
             companies = db.query(Company).\

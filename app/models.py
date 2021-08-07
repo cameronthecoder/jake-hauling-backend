@@ -2,7 +2,7 @@ from sqlalchemy.orm import backref, relationship
 from sqlalchemy.sql.sqltypes import Boolean, Date, Float, Text
 from .dependencies import Base
 from sqlalchemy import Column, Enum, ForeignKey, Integer, String, CHAR
-import datetime
+import datetime, aiohttp
 
 class User(Base):
     __tablename__ = "users"
@@ -29,6 +29,21 @@ class Address(Base):
     city = Column(String(150), index=True)
     state = Column(CHAR(2))
     zip = Column(CHAR(5))
+
+    # add to_coordinates function
+
+    def __str__(self) -> str:
+        if not self.city or not self.street or not self.state or not self.zip:
+            return self.to_from
+        return f"{self.street}, {self.city}, {self.state}, {self.zip}"
+
+
+    async def to_coordinates(self):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f'https://maps.googleapis.com/maps/api/geocode/outputFormat?key={key}&address=${self.to_string}', params=params) as resp:
+                self.questions = await resp.json()
+
+
     
 
 class Company(Base):
